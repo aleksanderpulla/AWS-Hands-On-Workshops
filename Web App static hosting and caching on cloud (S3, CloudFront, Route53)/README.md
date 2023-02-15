@@ -1,4 +1,4 @@
-####Static website deployment on Amazon S3 bucket, as well as traffic routing via Route 53 and caching capabilities via CloudFront
+#Static website deployment on Amazon S3 bucket, as well as traffic routing via Route 53 and caching capabilities via CloudFront
 
 This hands-on project explains the required resources and steps for hosting *static website* (in this scenario it corresponds to my projects portfolio) on Amazon S3 and traffic routing to the custom domain registered with Amazon Route 53.
 Unfortunately, Amazon S3 website endpoints still do not support **HTTPS protocol**, however this is where Amazon CloudFront comes handy and to satisfy such requirement. Despite such fact, CloudFormation will also be used to take leverage of Edge Locations and caching capabilities, for which will improve the performance even more.
