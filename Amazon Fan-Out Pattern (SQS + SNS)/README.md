@@ -1,4 +1,4 @@
-# Amazon Fan-out Pattern (SNS + SQS)
+# AWS Fan-out Pattern (Amazon SNS + Amazon SQS)
 
 **Author**: Aleksandër Pulla  
 **Date**: 09/21/2024
