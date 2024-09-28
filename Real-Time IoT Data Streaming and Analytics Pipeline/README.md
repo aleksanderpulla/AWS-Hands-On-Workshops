@@ -1,4 +1,4 @@
-# Real-Time IoT Data Streaming and Analytics Pipeline
+# Real-Time IoT Data Streaming & Analytics Pipeline
 
 ## Project Overview
 
