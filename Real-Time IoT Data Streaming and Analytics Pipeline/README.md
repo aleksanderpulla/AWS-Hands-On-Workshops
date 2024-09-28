@@ -1,12 +1,13 @@
 # Real-Time IoT Data Streaming & Analytics Pipeline
 
+**Author**: Aleksandër Pulla  
+**Date**: 09/28/2024
+
 ## Project Overview
 
 This project demonstrates how to build a scalable real-time **IoT data pipeline** using AWS services like **Amazon Kinesis Data Streams**, **Data Firehose**, **Amazon S3**, and **Athena**. The pipeline streams IoT sensor data in real-time to Kinesis, ingests the data into S3 using Firehose, queries the data using Athena, and finally stores the processed results back into S3.
 
-## Architecture Diagram
-
-<!-- TODO: Image of the architecture -->
+![AWS Real-Time Streaming & Analytics Architecture Diagram](./images/Real-time_Streaming_Analytics_architecture.png)
 
 ---
 
@@ -21,7 +22,7 @@ This project demonstrates how to build a scalable real-time **IoT data pipeline*
    - Number of shards: `1` (adjust according to traffic)
 4. Click **Create Data Stream**.
 
-<!-- TODO: Image -->
+![Create Data Stream](./images/Step1.1_create_data_stream.png)
 
 ### Step 1.2: Send IoT data to Kinesis Data Stream using Python
 
@@ -34,10 +35,10 @@ import json
 from datetime import datetime, timedelta
 
 # Kinesis client setup
-kinesis = boto3.client('kinesis', region_name='eu-north-1')
+kinesis = boto3.client('kinesis', region_name='your-region')
 
 # IoT-related random data generation
-num_records = 1000
+num_records = 500
 
 # Define the IoT sensor data fields
 device_ids = ['sensor-001', 'sensor-002', 'sensor-003', 'sensor-004', 'sensor-005']
@@ -67,9 +68,6 @@ for i in range(num_records):
         'status': status
     }
 
-    # Print data to console
-    print(json.dumps(data, indent=2))
-
     # Send data to Kinesis stream
     kinesis.put_record(
         StreamName='IoT-Data-Stream',
@@ -80,7 +78,7 @@ for i in range(num_records):
 print("Data successfully streamed to Kinesis.")
 ```
 
-<!-- TODO: Process the code to not look like from AI -->
+![Verify Data Stream code](./images/Step1.1_verify_stream.png)
 
 ---
 
@@ -92,10 +90,13 @@ print("Data successfully streamed to Kinesis.")
 4. Set the Destination as **Amazon S3**.
 5. Choose **Parquet** as the data format (this format is more efficient than JSON in terms of costs and data processing).
 6. Set the buffer size and buffer interval according to the expected volume of data (e.g., 5MB or 60 seconds).
-7. Choose or create an S3 bucket (e.g., `s3://iot-bucket/raw/`).
-8. Click **Create Delivery Stream**.
+7. Choose or create an S3 bucket (e.g., `s3://iot-data/`).
+8. Update the bucket prefix to load the files in a custom folder (i.e. `raw/`)
+9. Click **Create Delivery Stream**.
 
-<!-- TODO: Image -->
+![Create Delivery Stream](./images/Step2_Firehose_load_s3.png)
+
+![Verify the load](./images/Step2_verify_load.png)
 
 ---
 
@@ -116,11 +117,11 @@ CREATE EXTERNAL TABLE iot_sensor_data (
   status STRING
 )
 STORED AS PARQUET
-LOCATION 's3://iot-bucket/raw'
+LOCATION 's3://iot-data/raw'
 TBLPROPERTIES ('parquet.compression'='SNAPPY');
 ```
 
-<!-- TODO: Image of created table in Athena -->
+![Create Athena External Table](./images/Step3.1_Create_external_table_Athena.png)
 
 ### Step 3.2: Example SQL queries to analyze the sensor data
 
@@ -132,7 +133,7 @@ FROM iot_sensor_data
 GROUP BY location;
 ```
 
-<!-- TODO: Image of sql report 1 in Athena -->
+![Query 1 example](./images/Step3.2_query_1_example.png)
 
 **Query 2: Count of Faulty Devices**
 
@@ -142,7 +143,7 @@ FROM iot_sensor_data
 WHERE status = 'faulty';
 ```
 
-<!-- TODO: Image of sql report 2 in Athena -->
+![Query 2 example](./images/Step3.2_query_2_example.png)
 
 **Query 3: Find All Sensor Data with High Humidity (> 75%)**
 
@@ -152,7 +153,7 @@ FROM iot_sensor_data
 WHERE humidity > 75;
 ```
 
-<!-- TODO: Image of sql report 3 in Athena -->
+![Query 3 example](./images/Step3.2_query_3_example.png)
 
 ---
 
@@ -166,7 +167,7 @@ You can use Athena’s **CREATE TABLE AS SELECT (CTAS)** command to store proces
 CREATE TABLE s3_output_avg_temp
 WITH (
   format = 'PARQUET',
-  external_location = 's3://iot-bucket/processed/avg_temperature/'
+  external_location = 's3://iot-data/processed/avg_temperature/'
 ) AS
 SELECT location, AVG(temperature) AS avg_temp
 FROM iot_sensor_data
@@ -175,9 +176,11 @@ GROUP BY location;
 
 <!-- TODO: Image of the query result in Athena  -->
 
-This query will store the results as Parquet files in the `s3://iot-bucket/processed/avg_temperature/` bucket.
+This query will store the results as Parquet files in the `s3://iot-data/processed/avg_temperature/` bucket.
 
-<!-- TODO: Image of the parquet file in S3 -->
+![Verify newly created processed table in Athena](./images/Step4_verify_new_processed_table.png)
+
+![Verify newly created processed file in S3](./images/Step4_verify_processed_file_s3.png)
 
 ---
 
@@ -185,7 +188,7 @@ This query will store the results as Parquet files in the `s3://iot-bucket/proce
 
 This hands-on project showcases a complete IoT real-time data streaming & analysis pipeline using AWS:
 
-- **Kinesis Data Streams**: Ingest real-time IoT data.
+- **Kinesis Data Stream**: Ingest real-time IoT data.
 - **Data Firehose**: Load data into S3 in Parquet format.
 - **Amazon Athena**: Query and analyze the data.
 - **Amazon S3**: Store processed data for further analysis or downstream processing.
