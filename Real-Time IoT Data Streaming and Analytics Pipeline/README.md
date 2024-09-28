@@ -10,7 +10,7 @@ This project demonstrates how to build a scalable real-time **IoT data pipeline*
 
 ---
 
-## 1. **Stream IoT Data to Kinesis Data Stream**
+## 1. **Stream IoT data to Kinesis Data Stream**
 
 ### Step 1.1: Create a Kinesis Data Stream
 
@@ -23,7 +23,7 @@ This project demonstrates how to build a scalable real-time **IoT data pipeline*
 
 <!-- TODO: Image -->
 
-### Step 1.2: Send IoT Data to Kinesis using Python
+### Step 1.2: Send IoT data to Kinesis Data Stream using Python
 
 The following Python script generates random IoT data and sends it to the Kinesis Data Stream created earlier.
 
@@ -84,9 +84,7 @@ print("Data successfully streamed to Kinesis.")
 
 ---
 
-## 2. Ingest Data from Kinesis into S3 using Data Firehose
-
-### Step 2.1: Create a Kinesis Firehose Delivery Stream
+## 2. Ingest data from Kinesis Data Stream into S3 using Data Firehose
 
 1. Go to the **Data Firehose Console**.
 2. Click **Create Delivery Stream**.
@@ -159,8 +157,6 @@ WHERE humidity > 75;
 ---
 
 ## 4. Store processed data back into Amazon S3
-
-### Step 4.1: Save the processed data from Athena to S3
 
 You can use Athena’s **CREATE TABLE AS SELECT (CTAS)** command to store processed data back into S3.
 
