@@ -154,7 +154,7 @@ Once the process succeeds, you will notice that the image appears on the ECR Reg
     - **Container name**: `nextjs-app-container`
     - **Network mode**: bridge
     - **Image**: `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/nextjs-app:latest`
-    - **Memory**: 3072 MiB (3 GiB)
+    - **Memory**: 512 MiB
     - **CPU**: 1024 units (1 vCPU)
     - **Port mappings**: Set container port to `3000` (since Next.js runs on port 3000).
 
@@ -185,6 +185,8 @@ Once the process succeeds, you will notice that the image appears on the ECR Reg
 
 ![Create ALB](./images/step4_create_ALB.png)
 
+![Verify Target Groups Health Checks](./images/step4.1_verify_health_checks_tg.png)
+
 ---
 
 ## 5. **Create an ECS Service**
@@ -200,6 +202,8 @@ Once the process succeeds, you will notice that the image appears on the ECR Reg
    - **Target group**: Select the ALB target group you created earlier.
 
 3. Adjust other settings like auto-scaling as needed and click **Create Service**.
+
+![Create ECS Service](./images/step5_create_ECS_service.png)
 
 ---
 
@@ -237,6 +241,8 @@ Once the process succeeds, you will notice that the image appears on the ECR Reg
 
 2. Check CloudWatch logs in the CloudWatch console to view logs for your ECS tasks.
 
+![Logging in CloudWatch](./images/step7_logging_cloudwatch.png)
+
 ---
 
 ## 8. **Test the Next.js Application**
@@ -249,3 +255,5 @@ http://<ALB-DNS-name>
 ```
 
 You should see the Next.js default boilerplate page!
+
+![Test the application](./images/step8_test_app.png)
