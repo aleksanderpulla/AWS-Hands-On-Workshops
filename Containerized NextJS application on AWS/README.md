@@ -13,9 +13,9 @@ In this project, we will containerize a Next.js default boilerplate application 
 - NodeJS, AWS CLI, Docker, and git installed
 - AWS IAM user credentials with access to ECS, ECR, EC2, ELB, and CloudWatch services
 
-<!-- TODO: Architecture -->
+---
 
-![AWS Real-Time Streaming & Analytics Architecture Diagram](./images/Real-time_Streaming_Analytics_architecture.png)
+![Containerized NextJS application on AWS Architecture Diagram](./images/Containerized_NextJS_application_AWS_architecture_diagram.png)
 
 ---
 
