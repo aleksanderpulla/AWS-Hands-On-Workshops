@@ -28,30 +28,30 @@ The backend structure is modular, with separate configuration files for differen
 - **server** folder includes:
   - **config** folder, which contains the following files for configuring DynamoDB and Redis:
     - `dynamoDBClient.js` file, which provides a higher-level abstraction for handling JSON data, making it easier to interact with DynamoDB.
-    ![DynamoDBClient source code](/images/dynamoDBClient_source_code.png)
+    ![DynamoDBClient source code](./images/dynamoDBClient_source_code.png)
     - `redisClient.js` file configures the **Redis client** using the *redis* and *connect-redis* libraries. The code sets up a Redis client connection with host and port information sourced from environment variables. This configuration also includes a Redis store to manage session data.
-    ![RedisClient source code](/images/redisClient_source_code.png)
+    ![RedisClient source code](./images/redisClient_source_code.png)
   - **middleware** folder, containing `authMiddleware.js` file, which is responsible for protecting routes by ensuring that a user is authenticated. It checks for a valid session and verifies that a username exists in the session. If the session is valid, the request proceeds to the next middleware or route handler. If not, it responds with a `401 Unauthorized` status code and a JSON object indicating an error, along with a redirect path to the `/login` page.
-  ![AuthMiddleware source code](/images/authMiddleware_source_code.png)
+  ![AuthMiddleware source code](./images/authMiddleware_source_code.png)
   - **routes** folder, containing `auth.js` file, which is responsible for defining the Express routes for user authentication (register/login/logout functionalities).
-  ![Auth '/register' source code](/images/auth_register_source_code.png)
-  ![Auth '/login' source code](/images/auth_login_source_code.png)
-  ![Auth '/logout' source code](/images/auth_logout_source_code.png)
+  ![Auth '/register' source code](./images/auth_register_source_code.png)
+  ![Auth '/login' source code](./images/auth_login_source_code.png)
+  ![Auth '/logout' source code](./images/auth_logout_source_code.png)
   It utilizes `DynamoDB` for user data storage and `bcrypt` for password hashing and verification. Additionally, it imports the `requireAuth` middleware for protecting certain routes.
-  ![AuthMiddleware source code](/images/auth_requireAuth_middleware_source_code.png)
+  ![AuthMiddleware source code](./images/auth_requireAuth_middleware_source_code.png)
   - **sockets** folder, containing `socket.js` file, which is responsible for the real-time communication within the chat application using `Socket.IO`. It manages WebSocket connections, handles events related to user actions, and interacts with DynamoDB to store and retrieve chat messages.
-  ![WebSockets source code](/images/socket_source_code.png)
+  ![WebSockets source code](./images/socket_source_code.png)
   - **server.js** file, which is the entry point for the Node.js back-end application. It accomplishes the following operations:
     - sets up the Express server;
-      ![Server Express source code](/images/server_express_source_code.png)
+      ![Server Express source code](./images/server_express_source_code.png)
     - configures middleware for session management and CORS;
-      ![Server Session Management and CORS source code](/images/server_cors_session_source_code.png)
+      ![Server Session Management and CORS source code](./images/server_cors_session_source_code.png)
     - initializes SocketIO for real-time communication;
-      ![Server SocketIO source code](/images/server_socket_source_code.png)
+      ![Server SocketIO source code](./images/server_socket_source_code.png)
     - sets up Redis for session storage;
-      ![Server Redis source code](/images/server_redis_source_code.png)
+      ![Server Redis source code](./images/server_redis_source_code.png)
     - handles authentication routes.
-      ![Server Authentication Routes source code](/images/server_authroutes_source_code.png)
+      ![Server Authentication Routes source code](./images/server_authroutes_source_code.png)
 
   - **.env** file, which is responsible for storing environment variables that are essential for configuring the backend application securely and efficiently. 
   ![Back-end directory](./images/back-end-directory-structure.png)
