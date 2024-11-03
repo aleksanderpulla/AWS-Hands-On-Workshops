@@ -1,13 +1,18 @@
 # **Real-Time Chat Application on AWS Serverless Architecture**
 
-## **Overview**
+### **Overview**
 
 This project is a **real-time chat application** built using **React (front-end)** and **Node.js (back-end)**. The application is designed to handle real-time messaging with **Socket.IO** for WebSocket communication and **session management** with **Redis**. In the back-end, **DynamoDB** is used for storing user information and chat messages. In production, we plan to leverage **AWS Lambda**, **API Gateway**, and **ElastiCache Redis** for scaling the back-end services.
 
+### Solution Architecture 
+
+<!-- Remove the above title once the diagram is ready -->
+![Architecture Diagram](./images/todo.png)
+<!-- TODO: Architecture Diagram -->
+
+
 ### **Front-end (React with Vite)**
 The front-end uses **React** for building a responsive user interface, with **React Router** for routing between components like **Login**, **Register**, and **ChatRoom**. **Vite** is used as the build tool to streamline development and improve performance.
-
-<!-- TODO: Architecture Diagram -->
 
 **Front-end Directory Structure (Client):**
 - **src** folder includes:
@@ -55,3 +60,32 @@ The backend structure is modular, with separate configuration files for differen
 
   - **.env** file, which is responsible for storing environment variables that are essential for configuring the backend application securely and efficiently. 
   ![Back-end directory](./images/back-end-directory-structure.png)
+
+
+### Demo
+
+**Scenario #1: User Login & Session Persistence in Redis**
+
+In this scenario, a user logs into the chat application using their credentials. Upon successful authentication, a session is created and stored in Redis. This session includes user details and an expiration time to manage user activity. The application checks Redis for the session on each request to maintain the logged-in state. If the session is found, the user remains logged in, ensuring a seamless experience.
+
+![Scenario 1](./scenarios/Scenario_1.gif)
+
+**Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB**
+
+In this scenario, data is firstly added in an Amazon DynamoDB table, triggering a real-time ingestion pipeline. The processed data is then ingested back to the chat via SocketIO in real-time, thus enabling a smooth conversation between the users.
+
+![Scenario 2](./scenarios/Scenario_2.gif)
+
+**Scenario #3: User Logout expires session in Redis**
+
+In this scenario, when a user initiates a logout, the application explicitly removes the user's session from Redis. This ensures that any further requests by the user will require re-authentication. 
+
+![Scenario 3](./scenarios/Scenario_3.gif)
+
+**Scenario #4: Session expiration in Redis logs out the user**
+
+In this scenario, a session stored in Redis naturally expires after its set time-to-live (TTL) period. When the user makes a request after the session has expired, the application detects the absence of the session in Redis and treats the user as logged out. This results in the user redirection to the login page, ensuring user authentication remains up to date.
+
+NOTE: As my session's TTL is set to 30 minutes, for the demo purposes I have simulated the session expiration process by flushing out the database of Redis.
+
+![Scenario 4](./scenarios/Scenario_4.gif)
