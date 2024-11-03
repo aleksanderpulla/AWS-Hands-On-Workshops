@@ -35,7 +35,7 @@ The backend structure is modular, with separate configuration files for differen
 - **server** folder includes:
   - **config** folder, which contains the following files for configuring DynamoDB and Redis:
     - `dynamoDBClient.js` file, which provides a higher-level abstraction for handling JSON data, making it easier to interact with DynamoDB.
-    ![DynamoDBClient source code](./images/dynamoDBClient_source_code2.png)
+    ![DynamoDBClient source code](./images/dynamoDBClient_source_code.png)
     - `redisClient.js` file configures the **Redis client** using the *redis* and *connect-redis* libraries. The code sets up a Redis client connection with host and port information sourced from environment variables. This configuration also includes a Redis store to manage session data.
     ![RedisClient source code](./images/redisClient_source_code.png)
   - **middleware** folder, containing `authMiddleware.js` file, which is responsible for protecting routes by ensuring that a user is authenticated. It checks for a valid session and verifies that a username exists in the session. If the session is valid, the request proceeds to the next middleware or route handler. If not, it responds with a `401 Unauthorized` status code and a JSON object indicating an error, along with a redirect path to the `/login` page.
