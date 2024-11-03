@@ -2,7 +2,8 @@
 
 ### **Overview**
 
-This project is a **real-time chat application** built using **React (front-end)** and **Node.js (back-end)**. The application is designed to handle real-time messaging with **Socket.IO** for WebSocket communication and **session management** with **Redis**. In the back-end, **DynamoDB** is used for storing user information and chat messages. In production, we plan to leverage **AWS Lambda**, **API Gateway**, and **ElastiCache Redis** for scaling the back-end services.
+This project is a **real-time chat application** built using **React (front-end)** and **Node.js (back-end)**. The application is designed to handle real-time messaging with **SocketIO** for WebSocket communication and session management with **Redis**. In the back-end, **DynamoDB** is used for storing user information and chat messages. In production, we plan to leverage **AWS Lambda**, **API Gateway**, and **ElastiCache (Redis)** for scaling the back-end services.
+<br>
 
 ### Solution Architecture 
 
@@ -10,22 +11,23 @@ This project is a **real-time chat application** built using **React (front-end)
 ![Architecture Diagram](./images/todo.png)
 <!-- TODO: Architecture Diagram -->
 
+<br>
 
-### **Front-end (React with Vite)**
-The front-end uses **React** for building a responsive user interface, with **React Router** for routing between components like **Login**, **Register**, and **ChatRoom**. **Vite** is used as the build tool to streamline development and improve performance.
+### **Front-End (React with Vite)**
+The front-end uses **React** for building a responsive user interface, with **React Router** for routing between components like `Login`, `Register`, and `ChatRoom`. **Vite** is used as the build tool to streamline development and improve performance.
 
-**Front-end Directory Structure (Client):**
+**Front-End Directory Structure (Client):**
 - **src** folder includes:
   - **components** folder containing `Login.jsx`, `Register.jsx`, `ChatRoom.jsx`, and `ProtectedRoute.jsx`.
   - **App.jsx** manages routing, middleware for route protection, and the general structure of the application.
   
 ![Front-end directory](./images/frontend-directory.png)
 
-### **Back-end (Node.js with Express)**
+### **Back-End (Node.js with Express)**
 
-The backend of this project is built using **Node.js** with **Express.js** to manage HTTP routes and handle API requests. For real-time messaging, **Socket.IO** is integrated to provide WebSocket communication between users. 
+The backend of this project is built using **Node.js** with **Express.js** to manage HTTP routes and handle API requests. For real-time messaging, **SocketIO** is integrated to provide WebSocket communication between users. 
 
-During development, **Redis** is used locally for session management, which will be later replaced by **AWS ElastiCache Redis**. **DynamoDB** stores user credentials and chat messages. 
+During development, **Redis** is used locally for session management, which will be later replaced by **AWS ElastiCache (Redis)**. **DynamoDB** stores user credentials and chat messages. 
 
 The backend structure is modular, with separate configuration files for different services and middleware.
 
@@ -61,8 +63,11 @@ The backend structure is modular, with separate configuration files for differen
   - **.env** file, which is responsible for storing environment variables that are essential for configuring the backend application securely and efficiently. 
   ![Back-end directory](./images/back-end-directory-structure.png)
 
+<br>
 
 ### Demo
+
+This section consists of several scenarios, demonstrating the user experience of the application while implementing all the project's requirements.
 
 **Scenario #1: User Login & Session Persistence in Redis**
 
@@ -89,3 +94,11 @@ In this scenario, a session stored in Redis naturally expires after its set time
 NOTE: As my session's TTL is set to 30 minutes, for the demo purposes I have simulated the session expiration process by flushing out the database of Redis.
 
 ![Scenario 4](./scenarios/Scenario_4.gif)
+
+<br>
+
+### "Flying to the cloud with serverless wings"
+
+<!-- TODO: Migration to AWS cloud -->
+
+![TODO](./images/todo.png)
