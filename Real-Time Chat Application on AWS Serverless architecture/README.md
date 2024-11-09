@@ -127,13 +127,19 @@ In this phase, we migrate core backend functionality from local development to a
 
 **1. Replace local Redis with ElastiCache for Session Management**
 
+> Note: Since Amazon ElastiCache for Redis does not support publicly accessible endpoints, you will need to think of a way how to privately connect to it. There are different approaches that can be taken into consideration (i.e. build a VPN connectivity with the private resource, establish Direct Connect for private communication, etc.), however for this hands-on project I will be using EC2 instance as Bastion Host.
+
 To manage sessions in the cloud:
 
 - Create an ElastiCache Redis cluster and obtain the connection endpoint.
+![ElastiCache Instance](./images/ElasticacheInstance.png)
+- Launch EC2 instance within the same VPC that ElastiCache is deployed and SSH into it.
+- Deploy a Redis Client (I am using the dockerized version of Redis Insights - https://redis.io/docs/latest/operate/redisinsight/install/install-on-docker/)
+- Configure security group of the Bastion Host to allow access to port 80 (HTTP), as well as 5540 (default port of Redis Insights)
+- Access Redis Client and connect to ElastiCache
+![ElastiCache Successful Connection](./images/RedisClientSuccessfulConnection.png)
 - Update Lambda functions to connect to ElastiCache Redis instead of local Redis, ensuring sessions are stored centrally.
-
-![Migration with ElastiCache](./images/todo.png)
-<!-- TODO: Finish migration with ElastiCache -->
+![ElastiCache Session data](./images/ElastiCacheSessionData.png)
 
 This ElastiCache setup provides consistent session management across all Lambda functions and maintains session data reliability.
 
@@ -192,13 +198,21 @@ In order to migrate the entire back-end Express logic in a serverless manner to 
   ![Register Test](./images/RegisterTest.png)
 - Review the results
   - Once the test finishes, check the status code and the JSON response from the server
+  **`Register function`**
   ![Register Test Result](./images/RegisterTestResult.png)
+  **`Login function`**
+  ![Login Test Result](./images/LoginTestResult.png)
+  **`Logout function`**
+  ![Logout Test Result](./images/LogoutTestResult.png)
+  **`Protected function - Session Persistent`**
+  ![Protected Test Result - Session Persistent](./images/ProtectedTestResultSessionPersist.png)
+  **`Protected function - Session Expired`**
+  ![Protected Test Result - Session Expired](./images/ProtectedTestResultSessionNonPersistent.png)
   - Verify the result on the respective AWS service:
     - For the **Register** functionality the user's credentials should be added to the `users` table within DynamoDB
     ![Register Test Result - DynamoDB](./images/RegisterTestResultDynamoDB.png)
     - For the rest of the functionalities check session data on ElastiCache 
-      <!-- TODO: Screenshot of the session data to Elasticache -->
-      ![Screenshot of the session data to Elasticache](./images/todo.png)
+      ![ElastiCache Data](./images/ElastiCacheSessionData.png)
 
 
 **3. Set Up API Gateway as the Entry Point**
