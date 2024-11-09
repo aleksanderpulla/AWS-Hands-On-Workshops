@@ -125,6 +125,8 @@ In this phase, we migrate core backend functionality from local development to a
 
 #### **Migration Steps**
 
+<br>
+
 **1. Replace local Redis with ElastiCache for Session Management**
 
 > Note: Since Amazon ElastiCache for Redis does not support publicly accessible endpoints, you will need to think of a way how to privately connect to it. There are different approaches that can be taken into consideration (i.e. build a VPN connectivity with the private resource, establish Direct Connect for private communication, etc.), however for this hands-on project I will be using EC2 instance as Bastion Host.
@@ -142,6 +144,7 @@ To manage sessions in the cloud:
 ![ElastiCache Session data](./images/ElastiCacheSessionData.png)
 
 This ElastiCache setup provides consistent session management across all Lambda functions and maintains session data reliability.
+<br>
 
 **2. Convert Backend Routes to Lambda Functions**
 
@@ -153,7 +156,7 @@ Each backend route previously managed by Express is now restructured into AWS La
 
 In order to migrate the entire back-end Express logic in a serverless manner to the cloud, the following tasks must be accomplished:
 - Express source code to be converted to AWS Lambda logic (asynchronous handler function that accepts an event as parameter)
-  - **`register.mjs`**
+  - **`register.mjs`** 
 ![register.mjs source code](./images/register.mjs_source_code.png)
   - **`login.mjs`**
 ![login.mjs source code](./images/login.mjs_source_code.png)
@@ -215,6 +218,7 @@ In order to migrate the entire back-end Express logic in a serverless manner to 
     - For the rest of the functionalities check session data on ElastiCache 
       ![ElastiCache Data](./images/ElastiCacheSessionData.png)
 
+<br>
 
 **3. Set Up API Gateway as the Entry Point**
 
@@ -244,6 +248,8 @@ Configure each route and method:
 
 - Enable CORS to allow requests from the local frontend (e.g., http://localhost:5173).
 - API Gateway will handle cross-origin requests and securely pass them to Lambda functions. -->
+
+<br>
 
 **4. Configure Frontend to Use API Gateway Endpoints**
 
