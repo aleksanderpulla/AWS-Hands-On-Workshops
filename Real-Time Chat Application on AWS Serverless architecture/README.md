@@ -218,19 +218,32 @@ In order to migrate the entire back-end Express logic in a serverless manner to 
 
 **3. Set Up API Gateway as the Entry Point**
 
-Create a REST API in API Gateway to route requests to the Lambda functions. Configure each route and method:
+Create a REST API in API Gateway to route requests to the Lambda functions. Once all the resources (i.e. '/register', '/login', etc.) and their associated methods (POST) are created, deploy the API and create a stage for it. Once done, it will generate `Invoke URL` that will be used to execute api calls for triggering Lambda functions. 
 
-- **/login**: Connects to the login Lambda for user authentication.
-- **/register**: Connects to the register Lambda for new user registration.
-- **/logout**: Connects to the logout Lambda to end user sessions.
+![ChatRoom API ](./images/ChatroomAPI.png)
 
-CORS Configuration:
+Configure each route and method:
+
+- **/register**: Connects to the register Lambda function for new user registration.
+![Register API Endpoint](./images/APIGateway_RegisterEndpoint.png)
+![Register API Endpoint result in Postman](./images/APIGateway_RegisterEndpoint_Postman.png)
+- **/login**: Connects to the login Lambda function for user authentication.
+![Login API Endpoint](./images/APIGateway_LoginEndpoint.png)
+![Login API Endpoint result in Postman](./images/APIGateway_LoginEndpoint_Postman.png)
+- **/logout**: Connects to the logout Lambda function to end user's session.
+![Logout API Endpoint](./images/APIGateway_LogoutEndpoint.png)
+![Logout API Endpoint result in Postman](./images/APIGateway_LogoutEndpoint_Postman.png)
+- **/**: Connects to the protected route middleware function in Lambda that handles the behavior regarding the session's lifeline.
+![Protected Route API Endpoint](./images/APIGateway_ProtectedRouteEndpoint.png)
+  - When the session is persistent:
+  ![Protected Route API Endpoint result in Postman - Session is persistent](./images/APIGateway_ProtectedRouteEndpoint_Postman_SessionPersists.png)
+  - When the session is expired:
+  ![Protected Route API Endpoint result in Postman - Session is expired](./images/APIGateway_ProtectedRouteEndpoint_Postman_SessionExpired.png)
+
+<!-- CORS Configuration:
 
 - Enable CORS to allow requests from the local frontend (e.g., http://localhost:5173).
-- API Gateway will handle cross-origin requests and securely pass them to Lambda functions.
-
-![Migration with API Gateway](./images/todo.png)
-<!-- TODO: Finish migration with API Gateway -->
+- API Gateway will handle cross-origin requests and securely pass them to Lambda functions. -->
 
 **4. Configure Frontend to Use API Gateway Endpoints**
 
