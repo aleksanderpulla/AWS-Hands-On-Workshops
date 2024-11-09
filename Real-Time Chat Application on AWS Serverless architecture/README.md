@@ -251,7 +251,7 @@ Configure each route and method:
 
 <br>
 
-**4. Configure Frontend to Use API Gateway Endpoints**
+**4. Configure Front-end to use API Gateway Endpoints**
 
 Update the local frontend to interact with API Gateway instead of the local backend. For each route (e.g., login, register), replace the local URL with the API Gateway endpoint.
 
