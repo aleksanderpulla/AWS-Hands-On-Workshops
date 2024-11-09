@@ -1,11 +1,11 @@
 # **Real-Time Chat Application on AWS Serverless Architecture**
 
-### **Overview**
+## **Overview**
 
 This project is a **real-time chat application** built using **React (front-end)** and **Node.js (back-end)**. The application is designed to handle real-time messaging with **SocketIO** for WebSocket communication and session management with **Redis**. In the back-end, **DynamoDB** is used for storing user information and chat messages. In production, we plan to leverage **AWS Lambda**, **API Gateway**, and **ElastiCache (Redis)** for scaling the back-end services.
 <br>
 
-### Solution Architecture 
+## Solution Architecture 
 
 <!-- Remove the above title once the diagram is ready -->
 ![Architecture Diagram](./images/todo.png)
@@ -13,7 +13,7 @@ This project is a **real-time chat application** built using **React (front-end)
 
 <br>
 
-### **Front-End (React with Vite)**
+## **Front-End (React with Vite)**
 The front-end uses **React** for building a responsive user interface, with **React Router** for routing between components like `Login`, `Register`, and `ChatRoom`. **Vite** is used as the build tool to streamline development and improve performance.
 
 **Front-End Directory Structure (Client):**
@@ -23,7 +23,7 @@ The front-end uses **React** for building a responsive user interface, with **Re
   
 ![Front-end directory](./images/frontend-directory.png)
 
-### **Back-End (Node.js with Express)**
+## **Back-End (Node.js with Express)**
 
 The backend of this project is built using **Node.js** with **Express.js** to manage HTTP routes and handle API requests. For real-time messaging, **SocketIO** is integrated to provide WebSocket communication between users. 
 
@@ -65,7 +65,7 @@ The backend structure is modular, with separate configuration files for differen
 
 <br>
 
-### Demo
+## Demo
 
 This section consists of several scenarios, demonstrating the user experience of the application while implementing all the project's requirements.
 
@@ -97,8 +97,129 @@ NOTE: As my session's TTL is set to 30 minutes, for the demo purposes I have sim
 
 <br>
 
-### "Flying to the cloud with serverless wings"
+## "Flying to the cloud with serverless wings"
 
-<!-- TODO: Migration to AWS cloud -->
+In this phase, we migrate core backend functionality from local development to a **serverless AWS architecture**. This transition enables our application to scale effortlessly while optimizing for cost and performance. 
+> **Note**: This hybrid setup keeps front-end and real-time messaging with SocketIO local, while offloading authentication, session management, and data storage to the cloud.
 
-![TODO](./images/todo.png)
+---
+
+#### **Key AWS Services for Migration**
+
+1. **AWS Lambda**: 
+   - Handles backend logic for routes such as **user authentication** and **session management**.
+   - Replaces the local Express server, removing the need to manage servers.
+   - Automatically scales with usage, providing a cost-effective solution for variable workloads.
+
+2. **Amazon API Gateway**:
+   - Exposes the backend routes managed by AWS Lambda as HTTP endpoints.
+   - Routes requests from the local frontend to the appropriate Lambda functions.
+   - Enables CORS to allow cross-origin requests from the local frontend, ensuring secure communication.
+
+3. **Amazon ElastiCache (Redis)**:
+   - Replaces the local Redis instance for **session persistence**.
+   - Stores session data to manage authenticated user sessions in the cloud, ensuring consistency across multiple backend requests.
+   - Provides automated failover, backups, and monitoring, improving availability and resilience.
+
+---
+
+#### **Migration Steps**
+
+**1. Replace local Redis with ElastiCache for Session Management**
+
+To manage sessions in the cloud:
+
+- Create an ElastiCache Redis cluster and obtain the connection endpoint.
+- Update Lambda functions to connect to ElastiCache Redis instead of local Redis, ensuring sessions are stored centrally.
+
+![Migration with ElastiCache](./images/todo.png)
+<!-- TODO: Finish migration with ElastiCache -->
+
+This ElastiCache setup provides consistent session management across all Lambda functions and maintains session data reliability.
+
+**2. Convert Backend Routes to Lambda Functions**
+
+Each backend route previously managed by Express is now restructured into AWS Lambda functions. These functions include:
+- **Register**: Hashes and stores user data in DynamoDB.
+- **Login**: Validates user credentials, initiates a session, and stores session data in ElastiCache.
+- **Logout**: Clears session data from ElastiCache.
+- **ProtectedRoute**: The protected route checks for a valid session in ElastiCache before returning a response.
+
+In order to migrate the entire back-end Express logic in a serverless manner to the cloud, the following tasks must be accomplished:
+- Express source code to be converted to AWS Lambda logic (asynchronous handler function that accepts an event as parameter)
+  - **`register.mjs`**
+![register.mjs source code](./images/register.mjs_source_code.png)
+  - **`login.mjs`**
+![login.mjs source code](./images/login.mjs_source_code.png)
+  - **`logout.mjs`**
+![logout.mjs source code](./images/logout.mjs_source_code.png)
+  - **`protected.mjs`**
+![protected.mjs source code](./images/protected.mjs_source_code.png)
+- Lambda function handlers to be zipped with 'node_modules' file, since we are using external packages (i.e. 'bcrypt', 'redis', etc.) there's no way to install the dependencies as we have been doing locally due to the serverless nature of AWS Lambda:
+  - For the **Register** functionality we will be shipping only its respective handler code, as well as 'node-modules' (since we are using 'bcrypt' to hash user's password)
+  - For the **Login** functionality we will be shipping same as above, whereas for the '.env' environment variable file we will be referencing those from the 'Environment Variables' config option of Lambda (as we will be referencing ElastiCache url in a secure way, without exposing it to the public)
+  - For **Logout** and **ProtectedRoute** functionalities we will be doing the same procedure as above
+  ![Shipped functions](./images/shipped_functions.png)
+- Create IAM Role with least privilege principle for each Lambda function 
+  - For the **Register** lambda function, we will be attaching only `dynamodb:PutItem` action (as this function is responsible only for creating the user and adding its credentials to the 'users' table in DynamoDB)
+  ![Register IAM Role](./images/RegisterIAMRole.png)
+  - For the **Login** lambda function, we will be attaching only read-only access to DynamoDB via `dynamodb:GetItem` action, as well as write-only access to ElastiCache, in order to read user's credentials and write the session to ElastiCache
+  ![Login IAM Role](./images/LoginIAMRole.png)
+  - For the **Logout** lambda function, we will be attaching basic access with the option to delete the session's data
+  ![Logout IAM Role](./images/LogoutIAMRole.png)
+  - For the **ProtectedRoute** lambda function only basic access is required (only for checking if a session exists)
+  ![Protected IAM Role](./images/ProtectedIAMRole.png)
+- Create Lambda function for each feature
+  - Select `Author from scratch` for the template option
+  - Define a name for each function
+  - For the 'Runtime' select `Node.js 20.x` (the latest LTS version supported)
+  - On the 'Change default execution role' section, select `Use an existing role` and choose the IAM role that you created earlier for the respective function
+  - After reviewing all the above steps, click 'Create Function'
+- Upload Deployment Package to Lambda for each function
+  - In your Lambda function's Code tab, select Upload from > .zip file.
+  - Select the zipped function you packaged earlier and upload it
+  ![Register Function](./images/RegisterFunction.png)
+- Additional configurations
+  - Update the `Handler` configuration under 'Runtime Settings' (i.e. if the handler function is called `register.mjs` and the exported function name is called `handler` as default, the configuration field for the handler should be `register.handler`)
+  ![Register Handler Configuration](./images/RegisterHandlerConfiguration.png)
+  - Set Environment Variables (Optional)
+    - We will be using this only for referencing the url of ElastiCache
+- Deploy & Test the Lambda function
+  - Create a test event in the `Test` tab
+  - Define a name and configure the body of JSON event:
+    - `{"body": "{\"username\": \"<username>\", \"password\": \"<password>\"}"}`
+  - Save and run the test
+  ![Register Test](./images/RegisterTest.png)
+- Review the results
+  - Once the test finishes, check the status code and the JSON response from the server
+  ![Register Test Result](./images/RegisterTestResult.png)
+  - Verify the result on the respective AWS service:
+    - For the **Register** functionality the user's credentials should be added to the `users` table within DynamoDB
+    ![Register Test Result - DynamoDB](./images/RegisterTestResultDynamoDB.png)
+    - For the rest of the functionalities check session data on ElastiCache 
+      <!-- TODO: Screenshot of the session data to Elasticache -->
+      ![Screenshot of the session data to Elasticache](./images/todo.png)
+
+
+**3. Set Up API Gateway as the Entry Point**
+
+Create a REST API in API Gateway to route requests to the Lambda functions. Configure each route and method:
+
+- **/login**: Connects to the login Lambda for user authentication.
+- **/register**: Connects to the register Lambda for new user registration.
+- **/logout**: Connects to the logout Lambda to end user sessions.
+
+CORS Configuration:
+
+- Enable CORS to allow requests from the local frontend (e.g., http://localhost:5173).
+- API Gateway will handle cross-origin requests and securely pass them to Lambda functions.
+
+![Migration with API Gateway](./images/todo.png)
+<!-- TODO: Finish migration with API Gateway -->
+
+**4. Configure Frontend to Use API Gateway Endpoints**
+
+Update the local frontend to interact with API Gateway instead of the local backend. For each route (e.g., login, register), replace the local URL with the API Gateway endpoint.
+
+![Configure Frontend to Use API Gateway Endpoints](./images/todo.png)
+<!-- TODO: Configure Frontend to Use API Gateway Endpoints -->
