@@ -198,6 +198,7 @@ In order to migrate the entire back-end Express logic in a serverless manner to 
   ![Register Test](./images/RegisterTest.png)
 - Review the results
   - Once the test finishes, check the status code and the JSON response from the server
+  
   **`Register function`**
   ![Register Test Result](./images/RegisterTestResult.png)
   **`Login function`**
