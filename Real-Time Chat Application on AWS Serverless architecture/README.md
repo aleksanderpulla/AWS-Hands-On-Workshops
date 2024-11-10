@@ -244,16 +244,24 @@ Configure each route and method:
   - When the session is expired:
   ![Protected Route API Endpoint result in Postman - Session is expired](./images/APIGateway_ProtectedRouteEndpoint_Postman_SessionExpired.png)
 
-<!-- CORS Configuration:
-
-- Enable CORS to allow requests from the local frontend (e.g., http://localhost:5173).
-- API Gateway will handle cross-origin requests and securely pass them to Lambda functions. -->
-
 <br>
 
 **4. Configure Front-end to use API Gateway Endpoints**
 
+CORS Configuration:
+
+- Enable CORS to allow requests from the local frontend (e.g., http://192.168.1.100:5173).
+- API Gateway will handle cross-origin requests and securely pass them to Lambda functions.
+
+![Enable CORS](./images/APIGateway_EnableCORS.png)
+
 Update the local frontend to interact with API Gateway instead of the local backend. For each route (e.g., login, register), replace the local URL with the API Gateway endpoint.
 
-![Configure Frontend to Use API Gateway Endpoints](./images/todo.png)
-<!-- TODO: Configure Frontend to Use API Gateway Endpoints -->
+
+**`Register.jsx`** front-end component
+![Register Endpoint - Frontend Update](./images/APIGateway_RegisterEndpoint_FrontendUpdate.png)
+![UI - Successful Registration](./images/UI_SuccessfulRegistration.png)
+![Headers Inspection](./images/HeadersInspection.png)
+![DynamoDB - Successful Registration](./images/DynamoDB_SuccessfulRegistration.png)
+
+The same logic is to be applied for the remaining endpoints.
