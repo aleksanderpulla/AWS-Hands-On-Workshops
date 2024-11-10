@@ -1,4 +1,4 @@
-# **Real-Time Chat Application on AWS Serverless Architecture**
+# **Real-Time Chat Application on AWS Serverless**
 
 **Author**: Aleksandër Pulla  
 **Date**: 11/10/2024
@@ -41,9 +41,9 @@ This project is a **real-time chat application** built using **React (front-end)
 
 ## Solution Architecture 
 
-<!-- Remove the above title once the diagram is ready -->
-![Architecture Diagram](./images/todo.png)
-<!-- TODO: Architecture Diagram -->
+This section provides a high-level overview of the solution architecture. The diagram below illustrates the various components and interactions within the cloud and on-premises systems, highlighting how data flows between them to achieve the desired functionality.
+
+![Architecture Diagram](./images/solution-architecture-diagram.png)
 
 <br>
 
