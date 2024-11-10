@@ -19,8 +19,8 @@ This chat application is designed with both flexibility and scalability in mind.
 4. [Back-End (Node.js with Express)](#back-end-nodejs-with-express)
    - [Back-End Directory Structure (Server)](#back-end-directory-structure-server)
 5. [Demo](#demo)
-   - [Scenario #1: User Login & Session Persistence in Redis](#scenario-1-user-login--session-persistence-in-redis)
-   - [Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB](#scenario-2-real-time-data-streaming--ingestion-from-amazon-dynamodb)
+   - [Scenario #1: User Login & Session Persistence in Redis](#scenario-1-user-login-and-session-persistence-in-redis)
+   - [Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB](#scenario-2-real-time-data-streaming-and-ingestion-from-amazon-dynamodb)
    - [Scenario #3: User Logout Expires Session in Redis](#scenario-3-user-logout-expires-session-in-redis)
    - [Scenario #4: Session Expiration in Redis Logs Out the User](#scenario-4-session-expiration-in-redis-logs-out-the-user)
 6. ["Flying to the Cloud with Serverless Wings"](#flying-to-the-cloud-with-serverless-wings)
@@ -50,7 +50,7 @@ This project is a **real-time chat application** built using **React (front-end)
 ## **Front-End (React with Vite)**
 The front-end uses **React** for building a responsive user interface, with **React Router** for routing between components like `Login`, `Register`, and `ChatRoom`. **Vite** is used as the build tool to streamline development and improve performance.
 
-**Front-End Directory Structure (Client):**
+<a id="front-end-directory-structure-client"></a> **Front-End Directory Structure (Client):**
 - **src** folder includes:
   - **components** folder containing `Login.jsx`, `Register.jsx`, `ChatRoom.jsx`, and `ProtectedRoute.jsx`.
   - **App.jsx** manages routing, middleware for route protection, and the general structure of the application.
@@ -65,7 +65,7 @@ During development, **Redis** is used locally for session management, which will
 
 The backend structure is modular, with separate configuration files for different services and middleware.
 
-**Back-end Directory Structure (Server):**
+<a id="back-end-directory-structure-server"></a> **Back-end Directory Structure (Server):**
 - **server** folder includes:
   - **config** folder, which contains the following files for configuring DynamoDB and Redis:
     - `dynamoDBClient.js` file, which provides a higher-level abstraction for handling JSON data, making it easier to interact with DynamoDB.
@@ -103,25 +103,25 @@ The backend structure is modular, with separate configuration files for differen
 
 This section consists of several scenarios, demonstrating the user experience of the application while implementing all the project's requirements.
 
-**Scenario #1: User Login & Session Persistence in Redis**
+<a id="scenario-1-user-login-and-session-persistence-in-redis"></a> **Scenario #1: User Login & Session Persistence in Redis**
 
 In this scenario, a user logs into the chat application using their credentials. Upon successful authentication, a session is created and stored in Redis. This session includes user details and an expiration time to manage user activity. The application checks Redis for the session on each request to maintain the logged-in state. If the session is found, the user remains logged in, ensuring a seamless experience.
 
 ![Scenario 1](./scenarios/Scenario_1.gif)
 
-**Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB**
+<a id="scenario-2-real-time-data-streaming-and-ingestion-from-amazon-dynamodb"></a> **Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB**
 
 In this scenario, data is firstly added in an Amazon DynamoDB table, triggering a real-time ingestion pipeline. The processed data is then ingested back to the chat via SocketIO in real-time, thus enabling a smooth conversation between the users.
 
 ![Scenario 2](./scenarios/Scenario_2.gif)
 
-**Scenario #3: User Logout expires session in Redis**
+<a id="scenario-3-user-logout-expires-session-in-redis"></a> **Scenario #3: User Logout expires session in Redis**
 
 In this scenario, when a user initiates a logout, the application explicitly removes the user's session from Redis. This ensures that any further requests by the user will require re-authentication. 
 
 ![Scenario 3](./scenarios/Scenario_3.gif)
 
-**Scenario #4: Session expiration in Redis logs out the user**
+<a id="scenario-4-session-expiration-in-redis-logs-out-the-user"></a> **Scenario #4: Session expiration in Redis logs out the user**
 
 In this scenario, a session stored in Redis naturally expires after its set time-to-live (TTL) period. When the user makes a request after the session has expired, the application detects the absence of the session in Redis and treats the user as logged out. This results in the user redirection to the login page, ensuring user authentication remains up to date.
 
@@ -161,7 +161,7 @@ In this phase, we migrate core backend functionality from local development to a
 
 <br>
 
-**1. Replace local Redis with ElastiCache for Session Management**
+<a id="1-replace-local-redis-with-elasticache-for-session-management"></a> **1. Replace local Redis with ElastiCache for Session Management**
 
 > Note: Since Amazon ElastiCache for Redis does not support publicly accessible endpoints, you will need to think of a way how to privately connect to it. There are different approaches that can be taken into consideration (i.e. build a VPN connectivity with the private resource, establish Direct Connect for private communication, etc.), however for this hands-on project I will be using EC2 instance as Bastion Host.
 
@@ -180,7 +180,7 @@ To manage sessions in the cloud:
 This ElastiCache setup provides consistent session management across all Lambda functions and maintains session data reliability.
 <br>
 
-**2. Convert Backend Routes to Lambda Functions**
+<a id="2-convert-backend-routes-to-lambda-functions"></a> **2. Convert Backend Routes to Lambda Functions**
 
 Each backend route previously managed by Express is now restructured into AWS Lambda functions. These functions include:
 - **Register**: Hashes and stores user data in DynamoDB.
@@ -254,7 +254,7 @@ In order to migrate the entire back-end Express logic in a serverless manner to 
 
 <br>
 
-**3. Set Up API Gateway as the Entry Point**
+<a id="3-set-up-api-gateway-as-the-entry-point"></a> **3. Set Up API Gateway as the Entry Point**
 
 Create a REST API in API Gateway to route requests to the Lambda functions. Once all the resources (i.e. '/register', '/login', etc.) and their associated methods (POST) are created, deploy the API and create a stage for it. Once done, it will generate `Invoke URL` that will be used to execute api calls for triggering Lambda functions. 
 
@@ -280,7 +280,7 @@ Configure each route and method:
 
 <br>
 
-**4. Configure Front-end to use API Gateway Endpoints**
+<a id="4-configure-front-end-to-use-api-gateway-endpoints"></a> **4. Configure Front-end to use API Gateway Endpoints**
 
 CORS Configuration:
 
