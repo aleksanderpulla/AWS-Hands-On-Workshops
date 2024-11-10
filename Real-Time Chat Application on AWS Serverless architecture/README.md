@@ -1,5 +1,39 @@
 # **Real-Time Chat Application on AWS Serverless Architecture**
 
+**Author**: Aleksandër Pulla  
+**Date**: 11/10/2024
+
+<br>
+
+*In today’s digital era, real-time communication is essential for applications that need to deliver a seamless, instant experience to users. This project explores the development of a real-time chat application that leverages a hybrid architecture: combining the strengths of locally hosted components with the scalability of AWS serverless services.
+This chat application is designed with both flexibility and scalability in mind. Initially built with a local setup for rapid development and testing, the project gradually transitions core backend components to AWS, utilizing services such as Lambda, API Gateway, DynamoDB, and ElastiCache to achieve a truly serverless backend architecture. By adopting a hybrid model, this solution maximizes the benefits of both local and cloud-hosted infrastructure.*
+
+<br>
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Solution Architecture](#solution-architecture)
+3. [Front-End (React with Vite)](#front-end-react-with-vite)
+   - [Front-End Directory Structure (Client)](#front-end-directory-structure-client)
+4. [Back-End (Node.js with Express)](#back-end-nodejs-with-express)
+   - [Back-End Directory Structure (Server)](#back-end-directory-structure-server)
+5. [Demo](#demo)
+   - [Scenario #1: User Login & Session Persistence in Redis](#scenario-1-user-login--session-persistence-in-redis)
+   - [Scenario #2: Real-Time Data Streaming & Ingestion from Amazon DynamoDB](#scenario-2-real-time-data-streaming--ingestion-from-amazon-dynamodb)
+   - [Scenario #3: User Logout Expires Session in Redis](#scenario-3-user-logout-expires-session-in-redis)
+   - [Scenario #4: Session Expiration in Redis Logs Out the User](#scenario-4-session-expiration-in-redis-logs-out-the-user)
+6. ["Flying to the Cloud with Serverless Wings"](#flying-to-the-cloud-with-serverless-wings)
+7. [Key AWS Services for Migration](#key-aws-services-for-migration)
+8. [Migration Steps](#migration-steps)
+   - [Replace Local Redis with ElastiCache for Session Management](#1-replace-local-redis-with-elasticache-for-session-management)
+   - [Convert Backend Routes to Lambda Functions](#2-convert-backend-routes-to-lambda-functions)
+   - [Set Up API Gateway as the Entry Point](#3-set-up-api-gateway-as-the-entry-point)
+   - [Configure Front-End to use API Gateway Endpoints](#4-configure-front-end-to-use-api-gateway-endpoints)
+9. [Conclusion](#conclusion)
+
+
+
 ## **Overview**
 
 This project is a **real-time chat application** built using **React (front-end)** and **Node.js (back-end)**. The application is designed to handle real-time messaging with **SocketIO** for WebSocket communication and session management with **Redis**. In the back-end, **DynamoDB** is used for storing user information and chat messages. In production, we plan to leverage **AWS Lambda**, **API Gateway**, and **ElastiCache (Redis)** for scaling the back-end services.
